@@ -1,0 +1,31 @@
+repositories {
+    mavenLocal()
+    mavenCentral()
+    repositories {
+        if((project.findProperty('git.maven.repo.url') != null && project.findProperty('project.name.short') != null)
+                || System.getenv('GIT_MAVEN_URL') != null) {
+            maven {
+                name = "GitHubPackages"
+                url = System.getenv('GIT_MAVEN_URL') ?: "${project.property('git.maven.repo.url')}/${project.property('project.name.short')}"
+                credentials {
+                    username = System.getenv('GIT_USERNAME') ?: project.findProperty("git.maven.repo.user")
+                    password = System.getenv('GIT_TOKEN') ?: project.findProperty("git.maven.repo.key")
+                }
+            }
+        }
+        if(project.findProperty('gcp.maven.repo.url') != null
+                || System.getenv('GCP_MAVEN_URL') != null) {
+            maven {
+                name = "GCPPackages"
+                url = System.getenv('GCP_MAVEN_URL') ?: project.findProperty('gcp.maven.repo.url')
+                credentials {
+                    username = System.getenv('GCP_MAVEN_USER') ?: project.findProperty('gcp.maven.repo.user')
+                    password = System.getenv('GCP_MAVEN_KEY') ?: project.findProperty('gcp.maven.repo.key')
+                }
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        }
+    }
+}

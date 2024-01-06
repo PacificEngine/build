@@ -1,18 +1,16 @@
 plugins {
     id 'groovy-gradle-plugin'
-    id 'com.github.pacificengine.build.plugin'
+    id 'io.github.pacificengine.build.plugin'
+    id 'com.gradle.plugin-publish' version "${pluginPublish_version}"
 }
 
 gradlePlugin {
     website.set("https://github.com/PacificEngine/gradle-plugins")
     vcsUrl.set("https://github.com/PacificEngine/gradle-plugins")
-    plugins {
-        zipPlugin {
-            id = 'com.github.pacificengine.build.zip'
-            displayName = 'Plugin for that helps you zip up jars'
-            description = 'A plugin that helps you zip up jars including all dependencies'
-            implementationClass = 'ComGithubPacificengineBuildZipPlugin'
-            tags.set(['zip', 'release', 'package', 'artifact'])
-        }
+    plugins.configureEach {
+        displayName = 'Zip Artifact Plugin'
+        description = 'A plugin to help compile all Java dependencies into a zip file'
+        implementationClass = 'IoGithubPacificengineBuildZipPlugin'
+        tags.set(['zip', 'release', 'package', 'artifact'])
     }
 }
