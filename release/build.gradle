@@ -1,0 +1,18 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'com.github.pacificengine.build.plugin'
+}
+
+gradlePlugin {
+    website.set("https://github.com/PacificEngine/gradle-plugins")
+    vcsUrl.set("https://github.com/PacificEngine/gradle-plugins")
+    plugins {
+        releasePlugin {
+            id = 'com.github.pacificengine.build.release'
+            displayName = 'Plugin for release to maven'
+            description = 'A plugin that helps you release to maven'
+            implementationClass = 'ComGithubPacificengineBuildReleasePlugin'
+            tags.set(['repository', 'release', 'artifact'])
+        }
+    }
+}

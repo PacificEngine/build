@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = project.property('project.group')
+version = project.property('project.version')
+
+sourceCompatibility = project.property('java.source')
+targetCompatibility = project.property('java.target')
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = project.property('java.source')
+    targetCompatibility = project.property('java.target')
+    options.compilerArgs << '-parameters'
+}
+
+jar {
+    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+    archiveBaseName = "${rootProject.name}-${project.name}"
+    archiveVersion = "${project.version}"
+    exclude("**/application*.yml")
+    exclude("**/application*.properties")
+    exclude("**/log4j2*.xml")
+    exclude("**/logback*.xml")
+    manifest {
+        attributes(
+                'Automatic-Module-Name'     : "${project.group}.${rootProject.name}-${project.name}",
+                'Bundle-Vendor'             : "${project.hasProperty('project.vendor.name') ? project.property('project.vendor.name') : ''}",
+                'Bundle-SymbolicName'       : "${project.group}.${rootProject.name}-${project.name}",
+                'Bundle-Version'            : project.property('project.version'),
+                'Bundle-Description'        : "${project.hasProperty('project.description') ? project.property('project.description') : ''}",
+                'Bundle-DocURL'             : "${project.hasProperty('git.repo.url') ? project.property('git.repo.url') : ''}",
+                'Implementation-Vendor'     : "${project.hasProperty('project.vendor.name') ? project.property('project.vendor.name') : ''}",
+                'Implementation-Vendor-Id'  : project.property('project.group'),
+                'Implementation-Title'      : "${project.hasProperty('project.name.short') ? project.property('project.name.short') : "${rootProject.name}-${project.name}"}",
+                'Implementation-Build-Date' : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Implementation-Version'    : project.property('project.version'),
+                'Implementation-URL'        : "${project.hasProperty('git.repo.url') ? project.property('git.repo.url') : ''}",
+                'Built-By'                  : System.properties['user.name'],
+                'Build-Timestamp'           : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                'Build-Jdk'                 : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS'                  : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+                'Created-By'                : "Gradle ${gradle.gradleVersion}",
+                'X-Compile-Target-JDK'      : project.property('java.target'),
+                'X-Compile-Source-JDK'      : project.property('java.source')
+        )
+    }
+}
+
+test {
+    useJUnitPlatform()
+
+    reports {
+        junitXml.enabled(true)
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+task sourcesJar(type: Jar) {
+    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+    archiveBaseName = "${rootProject.name}-${project.name}"
+    archiveVersion = "${project.version}"
+}
+
+task javadocJar(type: Jar) {
+    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
+    from javadoc
+    archiveClassifier = 'javadoc'
+    archiveBaseName = "${rootProject.name}-${project.name}"
+    archiveVersion = "${project.version}"
+}
+
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            artifactId = "${rootProject.name}-${project.name}"
+            from(components.java)
+        }
+    }
+}
+
+jar.dependsOn sourcesJar
+jar.dependsOn javadocJar

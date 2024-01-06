@@ -1,0 +1,18 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'com.github.pacificengine.build.plugin'
+}
+
+gradlePlugin {
+    website.set("https://github.com/PacificEngine/gradle-plugins")
+    vcsUrl.set("https://github.com/PacificEngine/gradle-plugins")
+    plugins {
+        javaPlugin {
+            id = 'com.github.pacificengine.build.java'
+            displayName = 'Plugin for compiling Java'
+            description = 'A plugin that helps you compile java'
+            implementationClass = 'ComGithubPacificengineBuildJavaPlugin'
+            tags.set(['java', 'build', 'jar', 'artifact'])
+        }
+    }
+}

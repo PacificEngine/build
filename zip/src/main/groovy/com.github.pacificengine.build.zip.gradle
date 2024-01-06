@@ -1,0 +1,42 @@
+plugins {
+    id 'base'
+    id 'maven-publish'
+}
+
+configurations {
+    toCopy
+}
+
+group = project.property('project.group')
+version = project.property('project.version')
+
+task copyZipFiles(type: Copy) {
+    from 'src/zip'
+    into 'build/zip'
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.toCopy
+    into 'build/zip'
+    duplicatesStrategy = 'include'
+}
+
+task myZip(type: Zip) {
+    from 'build/zip'
+    include '*.jar'
+    archiveName "${rootProject.name}-${project.name}-${project.property('project.version')}.zip"
+    destinationDir file('build/artifact')
+}
+
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            artifactId = "${rootProject.name}-${project.name}"
+            artifact source: "build/artifact/${rootProject.name}-${project.name}-${project.property('project.version')}.zip", extension: 'zip'
+        }
+    }
+}
+
+myZip.dependsOn copyZipFiles
+myZip.dependsOn copyDependencies
+assemble.dependsOn myZip

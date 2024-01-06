@@ -1,0 +1,34 @@
+plugins {
+    id 'com.github.pacificengine.build.plugin'
+}
+
+publishing {
+    publications {
+        rootMaven(MavenPublication) {
+            groupId = project.property('project.group')
+            artifactId = "all-${rootProject.name}"
+            version = project.property('project.version')
+
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    dependencies {
+                        rootProject.subprojects.forEach(proj -> {
+                            dependency {
+                                groupId project.property('project.group')
+                                artifactId "${proj.name}-${rootProject.name}"
+                                version project.property('project.version')
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+}
+
+task printVersion {
+    doLast {
+        println project.property('project.version')
+    }
+}

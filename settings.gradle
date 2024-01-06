@@ -1,0 +1,9 @@
+rootProject.name = 'gradle-plugin'
+
+if (!System.getenv('PRINT_VERSION')) {
+    include 'docker'
+    include 'java'
+    include 'repository'
+    include 'release'
+    include 'zip'
+}

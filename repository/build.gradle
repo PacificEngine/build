@@ -1,0 +1,18 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'com.github.pacificengine.build.plugin'
+}
+
+gradlePlugin {
+    website.set("https://github.com/PacificEngine/gradle-plugins")
+    vcsUrl.set("https://github.com/PacificEngine/gradle-plugins")
+    plugins {
+        repositoryPlugin {
+            id = 'com.github.pacificengine.build.repository'
+            displayName = 'Plugin for release for pulling from a maven repo'
+            description = 'A plugin that helps you pull from a maven repo'
+            implementationClass = 'ComGithubPacificengineBuildRepositoryPlugin'
+            tags.set(['repository', 'dependency', 'artifact'])
+        }
+    }
+}
