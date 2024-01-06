@@ -17,7 +17,8 @@ git add gradle/wrapper/ gradlew gradlew.bat
 # Publish
 Requires `GIT_USERNAME` and `GIT_TOKEN` environment variables to be set
 ```bash
-git tag '0.1.1' -m 'v0.1.1'
-git push origin '0.1.1'
-gradle publishPlugins publish
+git tag '0.1.2' -m 'v0.1.2'
+git push origin '0.1.2'
+gradle publish
+gradle publishPlugins
 ```

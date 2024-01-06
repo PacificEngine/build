@@ -1,0 +1,19 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+gradlePlugin {
+    website.set(project.findProperty('git.repo.url'))
+    vcsUrl.set(project.findProperty('git.repo.url'))
+    plugins.configureEach {
+        if(name == project.findProperty('plugin.id')) {
+            displayName = project.findProperty('plugin.displayName')
+            description = project.findProperty('plugin.description')
+            implementationClass = project.findProperty('plugin.implementationClass')
+            tags.set(project.findProperty('plugin.tags').split(',').toList())
+        } else {
+            logger.log(LogLevel.ERROR, "Unexpected Plugin Identifier (Skipping): " + name)
+            // Doesn't actually skip, it just errors because of lack of displayName
+        }
+    }
+}

@@ -1,16 +1,5 @@
 plugins {
-    id 'groovy-gradle-plugin'
-    id 'io.github.pacificengine.build.plugin'
+    id 'io.github.pacificengine.build.plugin.groovy'
+    id 'io.github.pacificengine.build.plugin.release'
     id 'com.gradle.plugin-publish' version "${pluginPublish_version}"
-}
-
-gradlePlugin {
-    website.set("https://github.com/PacificEngine/gradle-plugins")
-    vcsUrl.set("https://github.com/PacificEngine/gradle-plugins")
-    plugins.configureEach {
-        displayName = 'Java Artifact Plugin'
-        description = 'A plugin to help compile Java artifacts in a standard way'
-        implementationClass = 'IOGithubPacificengineBuildJavaPlugin'
-        tags.set(['java', 'build', 'jar', 'artifact'])
-    }
 }

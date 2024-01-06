@@ -1,16 +1,5 @@
 plugins {
-    id 'groovy-gradle-plugin'
-    id 'io.github.pacificengine.build.plugin'
+    id 'io.github.pacificengine.build.plugin.groovy'
+    id 'io.github.pacificengine.build.plugin.release'
     id 'com.gradle.plugin-publish' version "${pluginPublish_version}"
-}
-
-gradlePlugin {
-    website.set("https://github.com/PacificEngine/gradle-plugins")
-    vcsUrl.set("https://github.com/PacificEngine/gradle-plugins")
-    plugins.configureEach {
-        displayName = 'Docker Artifact Plugin'
-        description = 'A plugin that helps you compile together all the dependencies for running in a docker instance'
-        implementationClass = 'IoGithubPacificengineBuildDockerPlugin'
-        tags.set(['docker', 'release', 'package'])
-    }
 }
