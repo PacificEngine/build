@@ -52,6 +52,6 @@ $Headers = @{
 }
 $Body = "{`"tag_name`":`"${version}`",`"name`":`"v${version}`",`"draft`":false,`"prerelease`":false,`"generate_release_notes`":true}"
 Invoke-WebRequest -Uri $url -Method POST -MaximumRedirection 5 -Headers $Headers -Body $Body
-gradle publish
-gradle publishPlugins
+./gradlew.bat publish
+./gradlew.bat publishPlugins
 ```
