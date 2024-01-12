@@ -23,8 +23,8 @@ Just include the plugin into any build you'd like to use it in and assign the ap
 __Gradle File__
 ```groovy
 plugins {
-    id 'io.github.pacificengine.build.plugin.groovy'
-    id 'io.github.pacificengine.build.plugin.release'
+    id 'io.github.pacificengine.build.plugin.groovy' version '0.1.0'
+    id 'io.github.pacificengine.build.plugin.release' version '0.1.0'
     id 'com.gradle.plugin-publish' version "1.2.1"
 }
 ```
