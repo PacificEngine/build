@@ -2,8 +2,8 @@ plugins {
     id 'groovy-gradle-plugin'
 }
 
-group = project.property('project.group')
-version = project.property('project.version')
+group = project.findProperty('project.group') ?: project.group ?: rootProject.findProperty('project.group') ?: rootProject.group
+version = project.findProperty('project.version') ?: project.version ?: rootProject.findProperty('project.version') ?: rootProject.version
 
 gradlePlugin {
     website.set(project.findProperty('plugin.website.url') ?: project.findProperty('plugin.url') ?: project.findProperty('git.repo.url'))
@@ -12,7 +12,7 @@ gradlePlugin {
         if(project.findProperty('plugin.id') == null
                 || project.findProperty('plugin.id') == ''
                 || name == project.findProperty('plugin.id')) {
-            displayName = project.findProperty('plugin.displayName')
+            displayName = project.findProperty('plugin.displayName') ?: project.findProperty('project.name') ?: project.name
             description = project.findProperty('plugin.description')
             implementationClass = project.findProperty('plugin.implementationClass')
             tags.set(project.findProperty('plugin.tags')?.split(';')?.toList() ?: List<String>.of())

@@ -5,9 +5,9 @@ plugins {
 publishing {
     publications {
         rootMaven(MavenPublication) {
-            groupId = project.property('project.group')
+            groupId = project.findProperty('project.group') ?: project.group
             artifactId = "all-gradle-plugin"
-            version = project.property('project.version')
+            version = project.findProperty('project.version') ?: project.version
 
             pom.withXml {
                 asNode().children().last() + {
@@ -15,9 +15,9 @@ publishing {
                     dependencies {
                         rootProject.subprojects.forEach(proj -> {
                             dependency {
-                                groupId project.property('project.group')
+                                groupId project.findProperty('project.group') ?: project.group
                                 artifactId "${proj.property('plugin.artifact.id')}"
-                                version project.property('project.version')
+                                version project.findProperty('project.version') ?: project.version
                             }
                         })
                     }
@@ -34,6 +34,6 @@ ext {
 
 task printVersion {
     doLast {
-        println project.property('project.version')
+        println project.findProperty('project.version') ?: project.version
     }
 }

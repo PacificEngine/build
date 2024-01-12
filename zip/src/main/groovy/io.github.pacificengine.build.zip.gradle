@@ -7,13 +7,15 @@ configurations {
     toCopy
 }
 
-group = project.property('project.group')
-version = project.property('project.version')
+group = project.findProperty('project.group') ?: project.group ?: rootProject.findProperty('project.group') ?: rootProject.group
+version = project.findProperty('project.version') ?: project.version ?: rootProject.findProperty('project.version') ?: rootProject.version
 
-zipArchiveGroupName = project.findProperty('project.archive.zip.group') ?: project.findProperty('project.archive.group') ?: project.property('project.group')
-zipArchiveBaseName = project.findProperty('project.archive.zip.name') ?: project.findProperty('project.archive.name') ?: ((project.findProperty('rootProject.name') == null || project.findProperty('rootProject.name') == project.property('project.name')) ? project.property('project.name') : "${project.property('rootProject.name')}-${project.property('project.name')}")
-zipArchiveVersion = project.findProperty('project.archive.zip.version') ?: project.findProperty('project.archive.version') ?: project.property('project.version')
-zipArchiveExtension = project.findProperty('project.archive.zip.extension') ?: 'zip'
+def zipProjectName = project.findProperty('project.name') ?: project.name
+def zipRootProjectName = project.findProperty('rootProject.name') ?: rootProject.name ?: zipProjectName
+def zipArchiveGroupName = project.findProperty('project.archive.zip.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
+def zipArchiveBaseName = project.findProperty('project.archive.zip.name') ?: project.findProperty('project.archive.name') ?: ((zipRootProjectName == zipProjectName) ? zipProjectName : "${zipRootProjectName}-${zipProjectName}")
+def zipArchiveVersion = project.findProperty('project.archive.zip.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
+def zipArchiveExtension = project.findProperty('project.archive.zip.extension') ?: 'zip'
 
 task copyZipFiles(type: Copy) {
     from project.findProperty('project.archive.zip.source') ?: 'src/zip'

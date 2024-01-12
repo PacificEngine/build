@@ -4,7 +4,7 @@ plugins {
 }
 
 ext {
-    isReleaseVersion = !project.property('project.version').endsWith("SNAPSHOT")
+    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith("SNAPSHOT")
 }
 
 //https://docs.gradle.org/current/userguide/signing_plugin.html

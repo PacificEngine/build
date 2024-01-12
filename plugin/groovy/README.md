@@ -36,7 +36,7 @@ plugins {
 
 ### Optional Properties
 * `plugin.id` The id of the plugin. Without this assigned, it will default to apply the settings to all plugins. (Example: `io.github.pacificengine.build.plugin.groovy`)
-* `plugin.displayName` The display name for the plugin. This is required if you want to release the plugin. (Example: `Gradle Plugin Groovy Plugin`)
+* `plugin.displayName` The display name for the plugin. This is required if you want to release the plugin. (Defaults to `project.name`) (Example: `Gradle Plugin Groovy Plugin`)
 * `plugin.description` The description for the plugin. (Example: `A plugin that help you write gradle plugins using groovy`)
 * `plugin.implementationClass` The implementation class to use for the plugin (Example: `IOGithubPacificengineBuildPluginGroovyPlugin`)
 * `plugin.tags` The tags to use for the plugin [`;` delimited] (Example: `gradle;groovy;build;artifact`)

@@ -3,15 +3,17 @@ plugins {
     id 'maven-publish'
 }
 
-group = project.property('project.group')
-version = project.property('project.version')
+group = project.findProperty('project.group') ?: project.group ?: rootProject.findProperty('project.group') ?: rootProject.group
+version = project.findProperty('project.version') ?: project.version ?: rootProject.findProperty('project.version') ?: rootProject.version
 
 sourceCompatibility = project.property('java.source')
 targetCompatibility = project.property('java.target')
 
-javaArchiveGroupName = project.findProperty('project.archive.java.group') ?: project.findProperty('project.archive.group') ?: project.property('project.group')
-javaArchiveBaseName = project.findProperty('project.archive.java.name') ?: project.findProperty('project.archive.name') ?: ((project.findProperty('rootProject.name') == null || project.findProperty('rootProject.name') == project.property('project.name')) ? project.property('project.name') : "${project.property('rootProject.name')}-${project.property('project.name')}")
-javaArchiveVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.property('project.version')
+def javaProjectName = project.findProperty('project.name') ?: project.name
+def javaRootProjectName = project.findProperty('rootProject.name') ?: rootProject.name ?: javaProjectName
+def javaArchiveGroupName = project.findProperty('project.archive.java.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
+def javaArchiveBaseName = project.findProperty('project.archive.java.name') ?: project.findProperty('project.archive.name') ?: ((javaRootProjectName == javaProjectName) ? javaProjectName : "${javaRootProjectName}-${javaProjectName}")
+def javaArchiveVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
 
 tasks.withType(JavaCompile) {
     sourceCompatibility project.property('java.source')
