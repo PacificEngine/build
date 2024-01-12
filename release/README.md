@@ -15,7 +15,7 @@ This plug-in should automatically pick up artifacts marked for publishing.
 __Gradle File__
 ```groovy
 plugins {
-    id 'io.github.pacificengine.build.release' version '0.1.3'
+    id 'io.github.pacificengine.build.release' version '0.1.0'
 }
 ```
 

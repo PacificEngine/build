@@ -49,6 +49,7 @@ publishing {
     }
 }
 
+/* Temporarily disable publishing to Gradle Repository
 afterEvaluate  {
     tasks.withType(PublishToMavenRepository) { task ->
         if (task.publication.name == "pluginMaven") {
@@ -62,4 +63,4 @@ afterEvaluate  {
         }
     }
 }
-
+*/

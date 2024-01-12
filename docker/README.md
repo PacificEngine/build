@@ -16,7 +16,7 @@ Using the `toCopy` in your dependencies will automatically copy the dependencies
 __Gradle File__
 ```groovy
 plugins {
-    id 'io.github.pacificengine.build.docker' version "0.1.3"
+    id 'io.github.pacificengine.build.docker' version "0.1.0"
 }
 
 dependencies {

@@ -13,7 +13,7 @@ Just include the plugin into any build you'd like to use it in and assign the ap
 __Gradle File__
 ```groovy
 plugins {
-    id 'io.github.pacificengine.build.repository' version '0.1.3'
+    id 'io.github.pacificengine.build.repository' version '0.1.0'
 }
 
 implementation group: 'io.github.pacificengine', name: 'pacificengine-common', version: '1.0.0'

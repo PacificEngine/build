@@ -15,7 +15,7 @@ Just include the plugin into any build you'd like to use it in and assign the ap
 __Gradle File__
 ```groovy
 plugins {
-    id 'io.github.pacificengine.build.java' version '0.1.3'
+    id 'io.github.pacificengine.build.java' version '0.1.0'
 }
 
 dependencies {
