@@ -25,8 +25,8 @@ tasks.withType(JavaCompile) {
 
 jar {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
-    archiveBaseName project.ext.javaArtifactId.toString()
-    archiveVersion project.ext.javaArtifactVersion.toString()
+    archiveBaseName = project.ext.javaArtifactId
+    archiveVersion = project.ext.javaArtifactVersion
     include(project.findProperty('project.archive.java.include')?.toString()?.split(';')?.toList() ?: List.<String>of('**'))
     exclude(project.findProperty('project.archive.java.exclude')?.toString()?.split(';')?.toList() ?: List.<String>of())
     manifest {
@@ -74,16 +74,16 @@ task sourcesJar(type: Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
-    archiveBaseName project.ext.javaArtifactId.toString()
-    archiveVersion project.ext.javaArtifactVersion.toString()
+    archiveBaseName project.ext.javaArtifactId
+    archiveVersion project.ext.javaArtifactVersion
 }
 
 task javadocJar(type: Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from javadoc
     archiveClassifier = 'javadoc'
-    archiveBaseName project.ext.javaArtifactId.toString()
-    archiveVersion project.ext.javaArtifactVersion.toString()
+    archiveBaseName project.ext.javaArtifactId
+    archiveVersion project.ext.javaArtifactVersion
 }
 
 publishing {

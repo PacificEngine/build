@@ -34,7 +34,7 @@ task myZip(type: Zip) {
     from project.findProperty('project.archive.zip.build') ?: 'build/zip'
     include(project.findProperty('project.archive.zip.include')?.toString()?.split(';')?.toList() ?: List.<String>of('**'))
     exclude(project.findProperty('project.archive.zip.exclude')?.toString()?.split(';')?.toList() ?: List.<String>of())
-    archiveName "${project.ext.zipArtifactId}-${project.ext.zipArtifactVersion}.${project.ext.zipArtifactExtension}"
+    archiveFile "${project.ext.zipArtifactId}-${project.ext.zipArtifactVersion}.${project.ext.zipArtifactExtension}"
     destinationDir file(project.findProperty('project.archive.zip.destination') ?: 'build/artifact')
 }
 
