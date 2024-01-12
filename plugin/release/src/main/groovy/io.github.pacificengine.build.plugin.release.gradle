@@ -52,8 +52,8 @@ publishing {
 afterEvaluate  {
     tasks.withType(PublishToMavenRepository) { task ->
         if (task.publication.name == "pluginMaven") {
-            task.publication.groupId = project.findProperty('plugin.artifact.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
-            task.publication.artifactId = project.findProperty('plugin.artifact.id') ?: project.findProperty('project.archive.name') ?: ((releasePluginRootProjectName == releasePluginProjectName) ? releasePluginProjectName : "${releasePluginRootProjectName}-${releasePluginProjectName}")
+            task.publication.groupId = project.findProperty('plugin.artifact.group') ?: project.findProperty('plugin.id') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
+            task.publication.artifactId = project.findProperty('plugin.artifact.id') ?: project.hasProperty('plugin.id') ? "${project.findProperty('plugin.id')}.gradle.plugin" : project.findProperty('project.archive.name') ?: ((releasePluginRootProjectName == releasePluginProjectName) ? releasePluginProjectName : "${releasePluginRootProjectName}-${releasePluginProjectName}")
             task.publication.version = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
         } else if (task.publication.name != "rootMaven") {
             logger.lifecycle("Disabling ${task.publication.name}")
