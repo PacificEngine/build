@@ -10,17 +10,6 @@ For usage go to the bundle specific readme file.
 * [io.github.pacificengine.build.repository](repository/README.md)
 * [io.github.pacificengine.build.zip](zip/README.md)
 
-__Gradle File__
-```groovy
-plugins {
-    id 'io.github.pacificengine.build.zip' version "0.1.0"
-}
-
-dependencies {
-    toCopy project(':instance')
-}
-```
-
 # How To Modify And Deploy
 
 ## Compile
