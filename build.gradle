@@ -6,7 +6,7 @@ publishing {
     publications {
         rootMaven(MavenPublication) {
             groupId = project.property('project.group')
-            artifactId = "all-${rootProject.name}"
+            artifactId = "all-gradle-plugin"
             version = project.property('project.version')
 
             pom.withXml {
