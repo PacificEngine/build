@@ -35,18 +35,19 @@ RUN apt-get update \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir /app
+
 ENV USER_NAME=docker USER_GROUP=docker
 RUN addgroup --system $USER_NAME && adduser --system $USER_NAME --ingroup $USER_GROUP
 USER root:root
 
-ENV GRADLE_VERSION
 COPY build/docker /
 
-RUN chown -R docker:docker /app
-USER docker:docker
+RUN chown -R ${USER_NAME}:${USER_GROUP} /app
+USER ${USER_NAME}:${USER_GROUP}
 WORKDIR "/app"
 
-ENTRYPOINT ["java","-jar","/app/app-${GRADLE_VERSION}.jar"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.github.pacificengine.Application"]
 ```
 
 ## Properties

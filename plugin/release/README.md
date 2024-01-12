@@ -35,10 +35,15 @@ plugins {
 
 ## Properties
 ### Required Properties
+* `project.group` The group the archive belongs to (Example: `io.github.PacificEngine`)
+* `project.name` The name of the project (Should be automatically assigned by gradle) (Example: `zipper`)
 * `project.version` The build version of the project (Example: `1.0.0`)
 
 ### Optional Properties
 * `project.sign` To determine if the release should be signed (Defaults to only on non-SNAPSHOT builds, `true` will always sign, `false` will never sign)
+* `plugin.artifact.group` The group to assign the plugin artifact in maven (Defaults to `project.group`)
+* `plugin.artifact.id` The artifact id to assign the plugin artifact in maven (Defaults to `${rootProject.name}-${project.name}`)
+* `plugin.artifact.version` The version id to assign the plugin artifact in maven (Defaults to `project.version`)
 * `git.maven.repo.url` The maven repo for the git project you want to push the release to (Defaults to System Variable `GIT_MAVEN_URL`)
 * `git.project.name` The project name of the git project you want to push the release into (Defaults to `project.name.short`)
 * `git.maven.repo.user` The git username (Defaults to System Variable `GIT_USERNAME`)

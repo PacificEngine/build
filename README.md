@@ -12,6 +12,9 @@ For usage go to the bundle specific readme file.
 * [io.github.pacificengine.build.repository](repository/README.md)
 * [io.github.pacificengine.build.zip](zip/README.md)
 
+Example Projects
+* [Docker Deployment Spring Template](https://github.com/PacificEngine/DockerDeployment)
+
 # How To Modify And Deploy
 
 * [Source link](https://github.com/PacificEngine/build)
@@ -37,7 +40,7 @@ git add gradle/wrapper/ gradlew gradlew.bat
 ```
 
 ## Publish
-Requires `GIT_USERNAME` and `GIT_TOKEN` environment variables to be set
+Requires `GIT_USERNAME` and `GIT_TOKEN` environment variables to be set with a token generated at https://github.com/settings/tokens/new with `write:packages` permissions.
 
 __Mac/Linux__
 ```bash

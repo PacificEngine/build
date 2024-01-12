@@ -16,7 +16,7 @@ publishing {
                         rootProject.subprojects.forEach(proj -> {
                             dependency {
                                 groupId project.property('project.group')
-                                artifactId "${proj.name}-${rootProject.name}"
+                                artifactId "${proj.property('plugin.artifact.id')}"
                                 version project.property('project.version')
                             }
                         })

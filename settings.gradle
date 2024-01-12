@@ -1,4 +1,4 @@
-rootProject.name = 'gradle-plugin'
+rootProject.name = 'build'
 
 if (!System.getenv('PRINT_VERSION')) {
     include 'docker'

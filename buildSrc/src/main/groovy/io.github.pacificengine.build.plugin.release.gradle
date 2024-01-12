@@ -49,9 +49,9 @@ publishing {
 afterEvaluate  {
     tasks.withType(PublishToMavenRepository) { task ->
         if (task.publication.name == "pluginMaven") {
-            task.publication.groupId = project.property('project.group')
-            task.publication.artifactId = "${project.name}-${rootProject.name}"
-            task.publication.version = project.property('project.version')
+            task.publication.groupId = project.findProperty('plugin.group') ?: project.property('project.group')
+            task.publication.artifactId = project.findProperty('plugin.name') ?: ((project.findProperty('rootProject.name') == null || project.findProperty('rootProject.name') == project.property('project.name')) ? project.property('project.name') : "${project.property('rootProject.name')}-${project.property('project.name')}")
+            task.publication.version = project.findProperty('plugin.version') ?: project.property('project.version')
         } else if (task.publication.name != "rootMaven") {
             logger.lifecycle("Disabling ${task.publication.name}")
             task.enabled = false
