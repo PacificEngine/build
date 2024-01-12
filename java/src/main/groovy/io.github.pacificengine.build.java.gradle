@@ -59,7 +59,7 @@ test {
     useJUnitPlatform()
 
     reports {
-        junitXml.enabled(true)
+        junitXml.required true
     }
 }
 
