@@ -9,46 +9,49 @@ version = project.property('project.version')
 sourceCompatibility = project.property('java.source')
 targetCompatibility = project.property('java.target')
 
+javaArchiveGroupName = project.findProperty('project.archive.java.group') ?: project.findProperty('project.archive.group') ?: project.property('project.group')
+javaArchiveBaseName = project.findProperty('project.archive.java.name') ?: project.findProperty('project.archive.name') ?: ((project.findProperty('rootProject.name') == null || project.findProperty('rootProject.name') == project.property('project.name')) ? project.property('project.name') : "${project.property('rootProject.name')}-${project.property('project.name')}")
+javaArchiveVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.property('project.version')
+
 tasks.withType(JavaCompile) {
-    sourceCompatibility = project.property('java.source')
-    targetCompatibility = project.property('java.target')
+    sourceCompatibility project.property('java.source')
+    targetCompatibility project.property('java.target')
     options.compilerArgs << '-parameters'
 }
 
 jar {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
-    archiveBaseName = "${rootProject.name}-${project.name}"
-    archiveVersion = "${project.version}"
-    exclude("**/application*.yml")
-    exclude("**/application*.properties")
-    exclude("**/log4j2*.xml")
-    exclude("**/logback*.xml")
+    archiveBaseName javaArchiveBaseName.toString()
+    archiveVersion javaArchiveVersion.toString()
+    include(project.findProperty('project.archive.java.include')?.toString()?.split(';')?.toList() ?: List.<String>of('**'))
+    exclude(project.findProperty('project.archive.java.exclude')?.toString()?.split(';')?.toList() ?: List.<String>of())
     manifest {
         attributes(
-                'Automatic-Module-Name'     : "${project.group}.${rootProject.name}-${project.name}",
-                'Bundle-Vendor'             : "${project.hasProperty('project.vendor.name') ? project.property('project.vendor.name') : ''}",
-                'Bundle-SymbolicName'       : "${project.group}.${rootProject.name}-${project.name}",
-                'Bundle-Version'            : project.property('project.version'),
-                'Bundle-Description'        : "${project.hasProperty('project.description') ? project.property('project.description') : ''}",
-                'Bundle-DocURL'             : "${project.hasProperty('git.repo.url') ? project.property('git.repo.url') : ''}",
-                'Implementation-Vendor'     : "${project.hasProperty('project.vendor.name') ? project.property('project.vendor.name') : ''}",
-                'Implementation-Vendor-Id'  : project.property('project.group'),
-                'Implementation-Title'      : "${project.hasProperty('project.name.short') ? project.property('project.name.short') : "${rootProject.name}-${project.name}"}",
-                'Implementation-Build-Date' : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
-                'Implementation-Version'    : project.property('project.version'),
-                'Implementation-URL'        : "${project.hasProperty('git.repo.url') ? project.property('git.repo.url') : ''}",
-                'Built-By'                  : System.properties['user.name'],
-                'Build-Timestamp'           : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-                'Build-Jdk'                 : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-                'Build-OS'                  : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
-                'Created-By'                : "Gradle ${gradle.gradleVersion}",
-                'X-Compile-Target-JDK'      : project.property('java.target'),
-                'X-Compile-Source-JDK'      : project.property('java.source')
+                'Automatic-Module-Name'     : project.findProperty('project.archive.java.module.include') == 'false' ? '' : project.findProperty('project.archive.java.module.name') ?: "${javaArchiveGroupName}.${javaArchiveBaseName}",
+                'Bundle-Vendor'             : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.vendor.name') ?: project.findProperty('project.vendor.name') ?: '',
+                'Bundle-SymbolicName'       : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.name') ?: "${javaArchiveGroupName}.${javaArchiveBaseName}",
+                'Bundle-Version'            : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.version') ?: javaArchiveVersion,
+                'Bundle-Description'        : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.description') ?: project.findProperty('project.description') ?: '',
+                'Bundle-DocURL'             : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.url') ?: project.findProperty('project.url') ?:  project.findProperty('git.repo.url') ?: '',
+                'Implementation-Vendor'     : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.vendor.name') ?: project.findProperty('project.vendor.name') ?: '',
+                'Implementation-Vendor-Id'  : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.vendor.id') ?: javaArchiveGroupName,
+                'Implementation-Title'      : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.title') ?: javaArchiveBaseName,
+                'Implementation-Build-Date' : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Implementation-Version'    : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.version') ?: javaArchiveVersion,
+                'Implementation-URL'        : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.url') ?: project.findProperty('project.url') ?: project.findProperty('git.repo.url') ?: '',
+                'Built-By'                  : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : System.properties['user.name'],
+                'Build-Timestamp'           : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                'Build-Jdk'                 : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS'                  : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+                'Created-By'                : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : "Gradle ${gradle.gradleVersion}",
+                'X-Compile-Target-JDK'      : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : project.property('java.target'),
+                'X-Compile-Source-JDK'      : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : project.property('java.source')
         )
     }
 }
 
 test {
+    onlyIf { !sourceSets.test.allSource.files.isEmpty() }
     useJUnitPlatform()
 
     reports {
@@ -67,22 +70,24 @@ task sourcesJar(type: Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
-    archiveBaseName = "${rootProject.name}-${project.name}"
-    archiveVersion = "${project.version}"
+    archiveBaseName javaArchiveBaseName.toString()
+    archiveVersion javaArchiveVersion.toString()
 }
 
 task javadocJar(type: Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from javadoc
     archiveClassifier = 'javadoc'
-    archiveBaseName = "${rootProject.name}-${project.name}"
-    archiveVersion = "${project.version}"
+    archiveBaseName javaArchiveBaseName.toString()
+    archiveVersion javaArchiveVersion.toString()
 }
 
 publishing {
     publications {
         gpr(MavenPublication) {
-            artifactId = "${rootProject.name}-${project.name}"
+            groupId = javaArchiveGroupName
+            artifactId = javaArchiveBaseName
+            version = javaArchiveVersion
             from(components.java)
         }
     }

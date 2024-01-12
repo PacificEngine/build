@@ -7,38 +7,39 @@ ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
 }
 
+group = project.property('project.group')
+version = project.property('project.version')
+
+//https://docs.gradle.org/current/userguide/signing_plugin.html
+//https://docs.gradle.org/current/userguide/publishing_maven.html
 tasks.withType(Sign) {
-    onlyIf { isReleaseVersion }
+    onlyIf { project.findProperty('project.sign') == 'true' || (isReleaseVersion && project.findProperty('project.sign') != 'false') }
     signing {
         useGpgCmd()
         sign publishing.publications.pluginMaven ?: publishing.publications.rootMaven
     }
 }
 
-group = project.property('project.group')
-version = project.property('project.version')
-
 publishing {
     repositories {
-        if((project.findProperty('git.maven.repo.url') != null && project.findProperty('project.name.short') != null)
-                || System.getenv('GIT_MAVEN_URL') != null) {
+        if((project.findProperty('git.maven.repo.url') != null || System.getenv('GIT_MAVEN_URL') != null)
+                && (project.findProperty('git.project.name') != null || project.findProperty('project.name.short') != null)) {
             maven {
                 name = "GitHubPackages"
-                url = System.getenv('GIT_MAVEN_URL') ?: "${project.property('git.maven.repo.url')}/${project.property('project.name.short')}"
+                url = "${project.findProperty('git.maven.repo.url') ?: System.getenv('GIT_MAVEN_URL')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"
                 credentials {
-                    username = System.getenv('GIT_USERNAME') ?: project.findProperty("git.maven.repo.user")
-                    password = System.getenv('GIT_TOKEN') ?: project.findProperty("git.maven.repo.key")
+                    username = project.findProperty("git.maven.repo.user") ?: System.getenv('GIT_USERNAME')
+                    password = project.findProperty("git.maven.repo.key") ?: System.getenv('GIT_TOKEN')
                 }
             }
         }
-        if(project.findProperty('gcp.maven.repo.url') != null
-                || System.getenv('GCP_MAVEN_URL') != null) {
+        if(project.findProperty('gcp.maven.repo.url') != null || System.getenv('GCP_MAVEN_URL') != null) {
             maven {
                 name = "GCPPackages"
-                url = System.getenv('GCP_MAVEN_URL') ?: project.findProperty('gcp.maven.repo.url')
+                url = project.findProperty('gcp.maven.repo.url') ?: System.getenv('GCP_MAVEN_URL')
                 credentials {
-                    username = System.getenv('GCP_MAVEN_USER') ?: project.findProperty('gcp.maven.repo.user')
-                    password = System.getenv('GCP_MAVEN_KEY') ?: project.findProperty('gcp.maven.repo.key')
+                    username = project.findProperty('gcp.maven.repo.user') ?: System.getenv('GCP_MAVEN_USER')
+                    password = project.findProperty('gcp.maven.repo.key') ?: System.getenv('GCP_MAVEN_KEY')
                 }
                 authentication {
                     basic(BasicAuthentication)

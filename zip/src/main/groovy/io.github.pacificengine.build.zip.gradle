@@ -10,29 +10,37 @@ configurations {
 group = project.property('project.group')
 version = project.property('project.version')
 
+zipArchiveGroupName = project.findProperty('project.archive.zip.group') ?: project.findProperty('project.archive.group') ?: project.property('project.group')
+zipArchiveBaseName = project.findProperty('project.archive.zip.name') ?: project.findProperty('project.archive.name') ?: ((project.findProperty('rootProject.name') == null || project.findProperty('rootProject.name') == project.property('project.name')) ? project.property('project.name') : "${project.property('rootProject.name')}-${project.property('project.name')}")
+zipArchiveVersion = project.findProperty('project.archive.zip.version') ?: project.findProperty('project.archive.version') ?: project.property('project.version')
+zipArchiveExtension = project.findProperty('project.archive.zip.extension') ?: 'zip'
+
 task copyZipFiles(type: Copy) {
-    from 'src/zip'
-    into 'build/zip'
+    from project.findProperty('project.archive.zip.source') ?: 'src/zip'
+    into project.findProperty('project.archive.zip.build') ?: 'build/zip'
 }
 
 task copyDependencies(type: Copy) {
     from configurations.toCopy
-    into 'build/zip'
+    into "${project.findProperty('project.archive.zip.build') ?: 'build/zip'}${project.findProperty('project.archive.zip.libs')}"
     duplicatesStrategy = 'include'
 }
 
 task myZip(type: Zip) {
-    from 'build/zip'
-    include '*.jar'
-    archiveName "${rootProject.name}-${project.name}-${project.property('project.version')}.zip"
-    destinationDir file('build/artifact')
+    from project.findProperty('project.archive.zip.build') ?: 'build/zip'
+    include(project.findProperty('project.archive.zip.include')?.toString()?.split(';')?.toList() ?: List.<String>of('**'))
+    exclude(project.findProperty('project.archive.zip.exclude')?.toString()?.split(';')?.toList() ?: List.<String>of())
+    archiveName "${zipArchiveBaseName}-${zipArchiveVersion}.${zipArchiveExtension}"
+    destinationDir file(project.findProperty('project.archive.zip.destination') ?: 'build/artifact')
 }
 
 publishing {
     publications {
         gpr(MavenPublication) {
-            artifactId = "${rootProject.name}-${project.name}"
-            artifact source: "build/artifact/${rootProject.name}-${project.name}-${project.property('project.version')}.zip", extension: 'zip'
+            groupId = zipArchiveGroupName
+            artifactId = zipArchiveBaseName
+            version = zipArchiveVersion
+            artifact source: "${project.findProperty('project.archive.zip.destination') ?: 'build/artifact'}/${zipArchiveBaseName}-${zipArchiveVersion}.${zipArchiveExtension}", extension: zipArchiveExtension
         }
     }
 }
