@@ -1,0 +1,5 @@
+plugins {
+    id 'io.github.pacificengine.build.plugin.groovy'
+    id 'io.github.pacificengine.build.plugin.release'
+    id 'com.gradle.plugin-publish' version "${pluginPublish_version}"
+}

@@ -6,11 +6,15 @@
 For usage go to the bundle specific readme file.
 * [io.github.pacificengine.build.docker](docker/README.md)
 * [io.github.pacificengine.build.java](java/README.md)
+* [io.github.pacificengine.build.plugin.groovy](plugin/groovy/README.md)
+* [io.github.pacificengine.build.plugin.release](plugin/release/README.md)
 * [io.github.pacificengine.build.release](release/README.md)
 * [io.github.pacificengine.build.repository](repository/README.md)
 * [io.github.pacificengine.build.zip](zip/README.md)
 
 # How To Modify And Deploy
+
+* [Source link](https://github.com/PacificEngine/build)
 
 ## Compile
 __Mac/Linux__

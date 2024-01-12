@@ -6,16 +6,30 @@
 ## Purpose
 The Purpose of this plugin is to make it easier to release to complicated repositories such as GCP and GitHub.
 
+This plugin intentionally excludes the default assigned plugin artifact, so you can custom add custom names for the plugins.
+
+If you'd like to include the default assigned plugin artifact, use [io.github.pacificengine.build.release](../../release/README.md) instead.
+
+## Examples
+
+* [io.github.pacificengine.build.docker](https://github.com/PacificEngine/build/tree/main/docker)
+* [io.github.pacificengine.build.java](https://github.com/PacificEngine/build/tree/main/java)
+* [io.github.pacificengine.build.plugin.groovy](https://github.com/PacificEngine/build/tree/main/plugin/groovy)
+* [io.github.pacificengine.build.plugin.release](https://github.com/PacificEngine/build/tree/main/plugin/release)
+* [io.github.pacificengine.build.release](https://github.com/PacificEngine/build/tree/main/release)
+* [io.github.pacificengine.build.repository](https://github.com/PacificEngine/build/tree/main/repository)
+* [io.github.pacificengine.build.zip](https://github.com/PacificEngine/build/tree/main/zip)
+
 ## Usage
 
 Just include the plugin into any build you'd like to use it in and assign the appropriate properties.
 
-This plug-in should automatically pick up artifacts marked for publishing. 
-
 __Gradle File__
 ```groovy
 plugins {
-    id 'io.github.pacificengine.build.release' version '0.1.0'
+    id 'io.github.pacificengine.build.plugin.groovy'
+    id 'io.github.pacificengine.build.plugin.release'
+    id 'com.gradle.plugin-publish' version "1.2.1"
 }
 ```
 
