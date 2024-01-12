@@ -74,16 +74,16 @@ task sourcesJar(type: Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
-    archiveBaseName project.ext.javaArtifactId
-    archiveVersion project.ext.javaArtifactVersion
+    archiveBaseName = project.ext.javaArtifactId
+    archiveVersion = project.ext.javaArtifactVersion
 }
 
 task javadocJar(type: Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from javadoc
     archiveClassifier = 'javadoc'
-    archiveBaseName project.ext.javaArtifactId
-    archiveVersion project.ext.javaArtifactVersion
+    archiveBaseName = project.ext.javaArtifactId
+    archiveVersion = project.ext.javaArtifactVersion
 }
 
 publishing {
