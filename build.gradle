@@ -2,11 +2,6 @@ plugins {
     id 'io.github.pacificengine.build.plugin.release'
 }
 
-ext {
-    isReleaseVersion        = !version.endsWith("SNAPSHOT")
-    pluginPublish_version   = '1.2.1'
-}
-
 publishing {
     publications {
         rootMaven(MavenPublication) {
@@ -19,11 +14,11 @@ publishing {
                     resolveStrategy = Closure.DELEGATE_FIRST
                     dependencies {
                         rootProject.subprojects.forEach(proj -> {
-                            if (proj.hasProperty('plugin.artifact.id')) {
+                            if (proj.hasProperty('plugin.id')) {
                                 dependency {
-                                    groupId project.findProperty('project.group') ?: project.group
+                                    groupId proj.property('plugin.artifact.group')
                                     artifactId proj.property('plugin.artifact.id')
-                                    version project.findProperty('project.version') ?: project.version
+                                    version project.property('project.version')
                                 }
                             }
                         })
@@ -32,6 +27,11 @@ publishing {
             }
         }
     }
+}
+
+ext {
+    isReleaseVersion        = !version.endsWith("SNAPSHOT")
+    pluginPublish_version   = '1.2.1'
 }
 
 task printVersion {

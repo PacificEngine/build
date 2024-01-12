@@ -3,12 +3,14 @@ plugins {
     id 'signing'
 }
 
-ext {
-    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith("SNAPSHOT")
-}
-
 def releasePluginProjectName = project.findProperty('project.name') ?: project.name
 def releasePluginRootProjectName = project.findProperty('rootProject.name') ?: rootProject.name ?: releasePluginProjectName
+ext {
+    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith("SNAPSHOT")
+    pluginArtifactGroup = project.findProperty('plugin.artifact.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
+    pluginArtifactId = project.findProperty('plugin.artifact.id') ?: project.findProperty('project.archive.name') ?: ((releasePluginRootProjectName == releasePluginProjectName) ? releasePluginProjectName : "${releasePluginRootProjectName}-${releasePluginProjectName}")
+    pluginArtifactVersion = releasePluginArtifactVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
+}
 
 //https://docs.gradle.org/current/userguide/signing_plugin.html
 //https://docs.gradle.org/current/userguide/publishing_maven.html
@@ -52,9 +54,9 @@ publishing {
 afterEvaluate  {
     tasks.withType(PublishToMavenRepository) { task ->
         if (task.publication.name == "pluginMaven") {
-            task.publication.groupId = project.findProperty('plugin.artifact.group') ?: project.findProperty('plugin.id') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
-            task.publication.artifactId = project.findProperty('plugin.artifact.id') ?: project.hasProperty('plugin.id') ? "${project.findProperty('plugin.id')}.gradle.plugin" : project.findProperty('project.archive.name') ?: ((releasePluginRootProjectName == releasePluginProjectName) ? releasePluginProjectName : "${releasePluginRootProjectName}-${releasePluginProjectName}")
-            task.publication.version = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
+            task.publication.groupId = project.ext.pluginArtifactGroup
+            task.publication.artifactId = project.ext.pluginArtifactId
+            task.publication.version = project.ext.pluginArtifactVersion
         } else if (task.publication.name != "rootMaven") {
             logger.lifecycle("Disabling ${task.publication.name}")
             task.enabled = false

@@ -12,10 +12,12 @@ version = project.findProperty('project.version') ?: project.version ?: rootProj
 
 def zipProjectName = project.findProperty('project.name') ?: project.name
 def zipRootProjectName = project.findProperty('rootProject.name') ?: rootProject.name ?: zipProjectName
-def zipArchiveGroupName = project.findProperty('project.archive.zip.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
-def zipArchiveBaseName = project.findProperty('project.archive.zip.name') ?: project.findProperty('project.archive.name') ?: ((zipRootProjectName == zipProjectName) ? zipProjectName : "${zipRootProjectName}-${zipProjectName}")
-def zipArchiveVersion = project.findProperty('project.archive.zip.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
-def zipArchiveExtension = project.findProperty('project.archive.zip.extension') ?: 'zip'
+ext {
+    zipArtifactGroup = project.findProperty('project.archive.java.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
+    zipArtifactId = project.findProperty('project.archive.java.name') ?: project.findProperty('project.archive.name') ?: ((zipRootProjectName == zipProjectName) ? zipProjectName : "${zipRootProjectName}-${zipProjectName}")
+    zipArtifactVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
+    zipArtifactExtension = project.findProperty('project.archive.zip.extension') ?: 'zip'
+}
 
 task copyZipFiles(type: Copy) {
     from project.findProperty('project.archive.zip.source') ?: 'src/zip'
@@ -32,17 +34,17 @@ task myZip(type: Zip) {
     from project.findProperty('project.archive.zip.build') ?: 'build/zip'
     include(project.findProperty('project.archive.zip.include')?.toString()?.split(';')?.toList() ?: List.<String>of('**'))
     exclude(project.findProperty('project.archive.zip.exclude')?.toString()?.split(';')?.toList() ?: List.<String>of())
-    archiveName "${zipArchiveBaseName}-${zipArchiveVersion}.${zipArchiveExtension}"
+    archiveName "${project.ext.zipArtifactId}-${project.ext.zipArtifactVersion}.${project.ext.zipArtifactExtension}"
     destinationDir file(project.findProperty('project.archive.zip.destination') ?: 'build/artifact')
 }
 
 publishing {
     publications {
         gpr(MavenPublication) {
-            groupId = zipArchiveGroupName
-            artifactId = zipArchiveBaseName
-            version = zipArchiveVersion
-            artifact source: "${project.findProperty('project.archive.zip.destination') ?: 'build/artifact'}/${zipArchiveBaseName}-${zipArchiveVersion}.${zipArchiveExtension}", extension: zipArchiveExtension
+            groupId = project.ext.zipArtifactGroup
+            artifactId = project.ext.zipArtifactId
+            version = project.ext.zipArtifactVersion
+            artifact source: "${project.findProperty('project.archive.zip.destination') ?: 'build/artifact'}/${project.ext.zipArtifactId}-${project.ext.zipArtifactVersion}.${project.ext.zipArtifactExtension}", extension: project.ext.zipArtifactExtension
         }
     }
 }
