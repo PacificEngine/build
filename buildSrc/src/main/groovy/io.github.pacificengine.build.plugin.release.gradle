@@ -1,20 +1,18 @@
+import javax.net.ssl.HttpsURLConnection
+import groovy.json.JsonOutput
+
 plugins {
     id 'maven-publish'
     id 'signing'
 }
 
-def releasePluginProjectName = project.findProperty('project.name') ?: project.name
-def releasePluginRootProjectName = project.findProperty('rootProject.name') ?: rootProject.name ?: releasePluginProjectName
 ext {
-    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith("SNAPSHOT")
-    pluginArtifactGroup = project.findProperty('plugin.artifact.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
-    pluginArtifactId = project.findProperty('plugin.artifact.id') ?: project.findProperty('project.archive.name') ?: ((releasePluginRootProjectName == releasePluginProjectName) ? releasePluginProjectName : "${releasePluginRootProjectName}-${releasePluginProjectName}")
-    pluginArtifactVersion = releasePluginArtifactVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
+    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith('SNAPSHOT')
 }
 
 //https://docs.gradle.org/current/userguide/signing_plugin.html
 //https://docs.gradle.org/current/userguide/publishing_maven.html
-tasks.withType(Sign) {
+tasks.withType(Sign).configureEach {
     onlyIf { project.findProperty('project.sign') == 'true' || (isReleaseVersion && project.findProperty('project.sign') != 'false') }
     signing {
         useGpgCmd()
@@ -24,20 +22,21 @@ tasks.withType(Sign) {
 
 publishing {
     repositories {
-        if((project.findProperty('git.maven.repo.url') != null || System.getenv('GIT_MAVEN_URL') != null)
-                && (project.findProperty('git.project.name') != null || project.findProperty('project.name.short') != null)) {
+        if(project.findProperty('git.maven.repo.url') != null
+                || ((project.findProperty('git.maven.url') != null || System.getenv('GIT_MAVEN_URL') != null)
+                && (project.findProperty('git.project.name') != null || project.findProperty('project.name.short') != null))) {
             maven {
-                name = "GitHubPackages"
-                url = "${project.findProperty('git.maven.repo.url') ?: System.getenv('GIT_MAVEN_URL')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"
+                name = 'GitHubPackages'
+                url = project.findProperty('git.maven.repo.url') != null ?: "${project.findProperty('git.maven.url') ?: System.getenv('GIT_MAVEN_URL')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"
                 credentials {
-                    username = project.findProperty("git.maven.repo.user") ?: System.getenv('GIT_USERNAME')
-                    password = project.findProperty("git.maven.repo.key") ?: System.getenv('GIT_TOKEN')
+                    username = project.findProperty('git.maven.repo.user') ?: project.findProperty('git.repo.user') ?: System.getenv('GIT_USERNAME')
+                    password = project.findProperty('git.maven.repo.key') ?: project.findProperty('git.repo.key')  ?: System.getenv('GIT_TOKEN')
                 }
             }
         }
         if(project.findProperty('gcp.maven.repo.url') != null || System.getenv('GCP_MAVEN_URL') != null) {
             maven {
-                name = "GCPPackages"
+                name = 'GCPPackages'
                 url = project.findProperty('gcp.maven.repo.url') ?: System.getenv('GCP_MAVEN_URL')
                 credentials {
                     username = project.findProperty('gcp.maven.repo.user') ?: System.getenv('GCP_MAVEN_USER')
@@ -51,16 +50,90 @@ publishing {
     }
 }
 
+def gitTagId = "${project.findProperty('git.tag.id') ?: '<%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
+def gitTagMessage = "${project.findProperty('git.tag.message') ?: 'Release <%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
+tasks.register('gitHubPublishTag') {
+    onlyIf {
+        isReleaseVersion
+    }
+    doFirst {
+        def gitExecutable = project.hasProperty('git.executable.path') ?: System.getenv('GIT_EXECUTABLE') ?: 'git'
+        def err = new ByteArrayOutputStream()
+        exec {
+            commandLine gitExecutable, 'tag', gitTagId, '-m', gitTagMessage
+            errorOutput = err
+        }.assertNormalExitValue()
+        def error = err.toString();
+        assert error.isAllWhitespace() : " Failed to create tag '${gitTagId}'. Exception: ${error}"
+
+        def gitTagRepos = project.hasProperty('git.tag.repo').split(';').toList() ?: List.of('origin')
+        gitTagRepos.forEach(repo -> {
+            exec {
+                commandLine gitExecutable, 'push', repo, gitTagId
+                errorOutput = err
+            }.assertNormalExitValue()
+            error = err.toString();
+            assert error.isAllWhitespace() : " Failed to push to '${repo}'. Exception: ${error}"
+        })
+    }
+}
+
+def gitReleaseName = "${project.findProperty('git.release.name') ?: 'Release <%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
+tasks.register('gitHubPublishRelease') {
+    onlyIf {
+        isReleaseVersion &&
+                project.findProperty('git.api.repo.url') != null
+                || ((project.findProperty('git.api.url') != null || System.getenv('GIT_API_URL') != null)
+                && (project.findProperty('git.project.name') != null || project.findProperty('project.name.short') != null))
+    }
+    doFirst {
+        def url = "${project.findProperty('git.api.repo.url') != null ?: "${project.findProperty('git.api.url') ?: System.getenv('GIT_API_URL')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"}/releases"
+        def req = (HttpsURLConnection) new URI(url).toURL().openConnection()
+        req.setRequestMethod('POST')
+        req.setRequestProperty('Accept', 'application/vnd.github+json')
+        req.setRequestProperty('Authorization', "Bearer ${project.findProperty('git.api.repo.key') ?: project.findProperty('git.repo.key') ?: System.getenv('GIT_TOKEN')}")
+        req.setRequestProperty('Content-Type', 'application/json; charset=UTF-8')
+        req.setDoOutput(true)
+        def body = [
+                tag_name                 : gitTagId,
+                name                     : gitReleaseName,
+                draft                    : project.findProperty('git.release.draft') == 'true',
+                prerelease               : project.findProperty('git.release.prerelease') == 'true',
+                generate_release_notes   : project.findProperty('git.release.notes') != 'false'
+        ]
+        if (project.hasProperty('git.release.body')) {
+            body.put('body', "${project.property('git.release.body')}".replace('<%VERSION%>', "${project.property('project.version')}"))
+        }
+        if (project.hasProperty('git.release.category')) {
+            body.put('discussion_category_name', project.property('git.release.category').toString())
+        }
+        if (project.hasProperty('git.release.latest')) {
+            body.put('make_latest', project.property('git.release.latest').toString())
+        }
+        req.getOutputStream().write(JsonOutput.toJson(body).getBytes('UTF-8'))
+        logger.info "Status '${req.getResponseMessage()}' Response: ${req.getInputStream().getText()}"
+    }
+}
+
+if (project.property('git.tag.auto') == 'true') {
+    gitHubPublishRelease.dependsOn gitHubPublishTag
+}
+if (project.property('git.release.auto') == 'true') {
+    publish.dependsOn gitHubPublishRelease
+}
+
 afterEvaluate  {
-    tasks.withType(PublishToMavenRepository) { task ->
-        if (task.publication.name == "pluginMaven") {
-            task.publication.groupId = project.ext.pluginArtifactGroup
-            task.publication.artifactId = project.ext.pluginArtifactId
-            task.publication.version = project.ext.pluginArtifactVersion
-        } else if (task.publication.name != "rootMaven") {
-            logger.lifecycle("Disabling ${task.publication.name}")
-            task.enabled = false
-            task.group = null
+    tasks.withType(PublishToMavenRepository).tap {
+        configureEach { task ->
+            if (task.publication.name == 'pluginMaven') {
+                task.publication.groupId = project.ext.pluginArtifactGroup
+                task.publication.artifactId = project.ext.pluginArtifactId
+                task.publication.version = project.ext.pluginArtifactVersion
+            } else if (task.publication.name != 'rootMaven') {
+                logger.lifecycle("Disabling ${task.publication.name}")
+                task.enabled = false
+                task.group = null
+            }
         }
     }
 }

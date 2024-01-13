@@ -37,5 +37,5 @@ plugins {
 * `plugin.description` The description for the plugin. (Example: `A plugin that help you write gradle plugins using groovy`)
 * `plugin.implementationClass` The implementation class to use for the plugin (Example: `IOGithubPacificengineBuildPluginGroovyPlugin`)
 * `plugin.tags` The tags to use for the plugin [`;` delimited] (Example: `gradle;groovy;build;artifact`)
-* `plugin.website.url` The website to use for the plugin. (Defaults to `plugin.url` otherwise `git.repo.url`)
-* `plugin.vcs.url` The vcs url to use for the plugin. (Defaults to `plugin.url` otherwise `git.repo.url`)
+* `plugin.website.url` The website to use for the plugin. (Defaults to `plugin.url` otherwise `project.url` otherwise `git.source.repo.url` otherwise `git.source.url`)
+* `plugin.vcs.url` The vcs url to use for the plugin. (Defaults to `plugin.url` otherwise `git.source.repo.url` otherwise `git.source.url`)

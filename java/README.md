@@ -57,7 +57,7 @@ dependencies {
 * `project.archive.java.bundle.name` The value of `Bundle-SymbolicName` (Defaults to `${javaArchiveGroupName}.${javaArchiveBaseName}`)
 * `project.archive.java.bundle.version` The value of `Bundle-Version` (Defaults to `javaArchiveVersion`)
 * `project.archive.java.bundle.description` The value of `Bundle-Description` (Defaults to `project.description`)
-* `project.archive.java.bundle.url` The value of `Bundle-DocURL` (Defaults to `project.url` otherwise `git.repo.url` otherwise ``)
+* `project.archive.java.bundle.url` The value of `Bundle-DocURL` (Defaults to `project.url` otherwise `git.source.repo.url` otherwise `git.source.url` otherwise ``)
 
 #### Implementation Info
 * `project.archive.java.implementation.include` If you want to include `Implementation-Vendor`, `Implementation-Vendor-Id`, `Implementation-Title`, `Implementation-Build-Date`, `Implementation-Version`, and `Implementation-URL` in the manifest file (Defaults to `true`)
@@ -66,7 +66,7 @@ dependencies {
 * `project.archive.java.implementation.title` The value of `Implementation-Title` (Defaults to `javaArchiveBaseName`)
 * `Implementation-Build-Date` is automatically assigned in the format `yyyy-MM-dd'T'HH:mm:ss.SSSZ`
 * `project.archive.java.implementation.version` The value of `Implementation-Version` (Defaults to `javaArchiveVersion`)
-* `project.archive.java.implementation.url` The value of `Implementation-URL` (Defaults to `project.url` otherwise `git.repo.url` otherwise ``)
+* `project.archive.java.implementation.url` The value of `Implementation-URL` (Defaults to `project.url` otherwise `git.source.repo.url` otherwise `git.source.url` otherwise ``)
 
 #### Build Info
 * `project.archive.java.buildInfo.include` If you want to include `Built-By`, `Build-Timestamp`, `Build-Jdk`, `Build-OS`, `Created-By`, `X-Compile-Target-JDK`, and `X-Compile-Source-JDK`  in the manifest file (Defaults to `true`)

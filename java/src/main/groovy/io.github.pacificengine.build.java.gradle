@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'java'
     id 'maven-publish'
@@ -17,12 +19,13 @@ ext {
     javaArtifactVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     sourceCompatibility project.property('java.source')
     targetCompatibility project.property('java.target')
     options.compilerArgs << '-parameters'
 }
 
+def gitSourceUrl = project.findProperty('git.source.repo.url') ?: "${project.findProperty('git.source.url')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"
 jar {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     archiveBaseName = project.ext.javaArtifactId
@@ -36,15 +39,15 @@ jar {
                 'Bundle-SymbolicName'       : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.name') ?: "${project.ext.javaArtifactGroup}.${project.ext.javaArtifactId}",
                 'Bundle-Version'            : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.version') ?: project.ext.javaArtifactVersion,
                 'Bundle-Description'        : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.description') ?: project.findProperty('project.description') ?: '',
-                'Bundle-DocURL'             : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.url') ?: project.findProperty('project.url') ?:  project.findProperty('git.repo.url') ?: '',
+                'Bundle-DocURL'             : project.findProperty('project.archive.java.bundle.include') == 'false' ? '' : project.findProperty('project.archive.java.bundle.url') ?: project.findProperty('project.url') ?: gitSourceUrl ?: '',
                 'Implementation-Vendor'     : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.vendor.name') ?: project.findProperty('project.vendor.name') ?: '',
                 'Implementation-Vendor-Id'  : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.vendor.id') ?: project.ext.javaArtifactGroup,
                 'Implementation-Title'      : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.title') ?: project.ext.javaArtifactId,
-                'Implementation-Build-Date' : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Implementation-Build-Date' : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
                 'Implementation-Version'    : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.version') ?: project.ext.javaArtifactVersion,
-                'Implementation-URL'        : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.url') ?: project.findProperty('project.url') ?: project.findProperty('git.repo.url') ?: '',
+                'Implementation-URL'        : project.findProperty('project.archive.java.implementation.include') == 'false' ? '' : project.findProperty('project.archive.java.implementation.url') ?: project.findProperty('project.url') ?: gitSourceUrl ?: '',
                 'Built-By'                  : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : System.properties['user.name'],
-                'Build-Timestamp'           : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                'Build-Timestamp'           : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
                 'Build-Jdk'                 : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
                 'Build-OS'                  : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
                 'Created-By'                : project.findProperty('project.archive.java.buildInfo.include') == 'false' ? '' : "Gradle ${gradle.gradleVersion}",
@@ -70,7 +73,7 @@ javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from sourceSets.main.allJava
     archiveClassifier = 'sources'
@@ -78,7 +81,7 @@ task sourcesJar(type: Jar) {
     archiveVersion = project.ext.javaArtifactVersion
 }
 
-task javadocJar(type: Jar) {
+tasks.register('javadocJar', Jar) {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     from javadoc
     archiveClassifier = 'javadoc'

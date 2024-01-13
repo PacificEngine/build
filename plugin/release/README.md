@@ -41,10 +41,36 @@ plugins {
 * `plugin.artifact.group` The group to assign the plugin artifact in maven (Defaults to `plugin.id` otherwise `project.archive.group` otherwise `project.group`)
 * `plugin.artifact.id` The artifact id to assign the plugin artifact in maven (Defaults to `${plugin.id}.gradle.plugin` otherwise `project.archive.name` otherwise `${rootProject.name}-${project.name}`)
 * `plugin.artifact.version` The version id to assign the plugin artifact in maven (Defaults to `project.version`)
-* `git.maven.repo.url` The maven repo for the git project you want to push the release to (Defaults to System Variable `GIT_MAVEN_URL`)
-* `git.project.name` The project name of the git project you want to push the release into (Defaults to `project.name.short`)
+
+#### Git Maven
+* `git.maven.repo.url` The maven repo for the git project you want to push the release to
+* `git.maven.url` Utilized if `git.maven.repo.url` is not defined. It is the base url for git maven commits (Defaults to System Variable `GIT_MAVEN_URL`)
+* `git.project.name` Utilized if `git.maven.repo.url` is not defined. The project name of the git project you want to push the release into (Defaults to `project.name.short`)``
 * `git.maven.repo.user` The git username (Defaults to System Variable `GIT_USERNAME`)
-* `git.maven.repo.key` The git key (Defaults to System Variable `GIT_TOKEN`)
+* `git.maven.repo.key` The git key (Defaults to `git.repo.key` otherwise to System Variable `GIT_TOKEN`)
+
+#### Git Tagging
+* `git.tag.auto` Should a tag be pushed on every non-SNAPSHOT publish (Defaults to `false`)
+* `git.tag.id` The identifier to use for the tag (Defaults to `<%VERSION%>`)
+* `git.tag.message` The commit message to use for the tag (Defaults to `Release <%VERSION%>`)
+* `git.executable.path` The executable to run git commands (Defaults to System Variable `GIT_EXECUTABLE` otherwise `git`)
+* `git.tag.repo` A list of repositories to write the tag to [`;` Delimited] (Defaults to `origin`)
+
+#### GitHub Release
+* `git.release.auto` Should a release be pushed on every non-SNAPSHOT publish (Defaults to `false`)
+* `git.api.repo.url` The maven repo for the git project you want to push the release to
+* `git.api.url` Utilized if `git.api.repo.url` is not defined. It is the base url for git maven commits (Defaults to System Variable `GIT_API_URL`)
+* `git.project.name` Utilized if `git.api.repo.url` is not defined. The project name of the git project you want to push the release into (Defaults to `project.name.short`)``
+* `git.api.repo.key` The git key (Defaults to `git.repo.key` otherwise to System Variable `GIT_TOKEN`)
+* `git.release.name` The name of the release (Defaults to `Release <%VERSION%>`)
+* `git.release.body` The body of the release
+* `git.release.draft` Should the release be marked as a draft (Defaults to `false`)
+* `git.release.prerelease` Should the release be marked as a pre-release (Defaults to `false`)
+* `git.release.notes` Should the release use automatically generated notes (Defaults to `true`)
+* `git.release.category` The discussion categories of the release
+* `git.release.latest` Should the release be marked as latest (GitHub defaults this to `true`)
+
+#### GCP Maven
 * `gcp.maven.repo.url` The GCP artifactory repository to release to (Defaults to System Variable `GCP_MAVEN_URL`)
 * `gcp.maven.repo.user` The GCP username (Defaults to System Variable `GCP_MAVEN_USER`)
 * `gcp.maven.repo.key` The GCP key (Defaults to System Variable `GCP_MAVEN_KEY`)

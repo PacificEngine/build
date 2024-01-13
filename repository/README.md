@@ -22,7 +22,7 @@ implementation group: 'io.github.pacificengine', name: 'pacificengine-common', v
 
 ## Properties
 ### Optional Properties
-* `git.maven.repo.url` The maven repo for the git project you want to push the release to (Defaults to System Variable `GIT_MAVEN_URL`)
+* `git.maven.repo.url` The maven repo for the git project you want to push the release to (Defaults to `git.maven.url` otherwise System Variable `GIT_MAVEN_URL`)
 * `git.project.name` The project name of the git project you want to push the release into (Defaults to `project.name.short`)
 * `git.maven.repo.user` The git username (Defaults to System Variable `GIT_USERNAME`)
 * `git.maven.repo.key` The git key (Defaults to System Variable `GIT_TOKEN`)

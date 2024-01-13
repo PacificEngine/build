@@ -19,21 +19,21 @@ ext {
     zipArtifactExtension = project.findProperty('project.archive.zip.extension') ?: 'zip'
 }
 
-task copyZipFiles(type: Copy) {
+tasks.register('copyZipFiles', Copy) {
     from project.findProperty('project.archive.zip.source') ?: 'src/zip'
     into project.findProperty('project.archive.zip.build') ?: 'build/zip'
 }
 
-task copyDependencies(type: Copy) {
+tasks.register('copyDependencies', Copy) {
     from configurations.toCopy
     into "${project.findProperty('project.archive.zip.build') ?: 'build/zip'}${project.findProperty('project.archive.zip.libs') ?: ''}"
     duplicatesStrategy = 'include'
 }
 
-task myZip(type: Zip) {
+tasks.register('myZip', Zip) {
     from project.findProperty('project.archive.zip.build') ?: 'build/zip'
-    include(project.findProperty('project.archive.zip.include')?.toString()?.split(';')?.toList() ?: List.<String>of('**'))
-    exclude(project.findProperty('project.archive.zip.exclude')?.toString()?.split(';')?.toList() ?: List.<String>of())
+    include(project.findProperty('project.archive.zip.include')?.toString()?.split(';')?.toList() ?: List.<String> of('**'))
+    exclude(project.findProperty('project.archive.zip.exclude')?.toString()?.split(';')?.toList() ?: List.<String> of())
     archiveBaseName = project.ext.zipArtifactId
     archiveVersion = project.ext.zipArtifactVersion
     archiveExtension = project.ext.zipArtifactExtension

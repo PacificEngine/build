@@ -6,12 +6,12 @@ configurations {
     toCopy
 }
 
-task copyDockerFiles(type: Copy) {
+tasks.register('copyDockerFiles', Copy) {
     from project.findProperty('project.archive.docker.source') ?: 'src/docker'
     into project.findProperty('project.archive.docker.build') ?: 'build/docker'
 }
 
-task copyDependencies(type: Copy) {
+tasks.register('copyDependencies', Copy) {
     from configurations.toCopy
     into "${project.findProperty('project.archive.docker.build') ?: 'build/docker'}/${project.findProperty('project.archive.docker.app') ?: 'app/lib'}"
     duplicatesStrategy = 'include'

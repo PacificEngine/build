@@ -5,9 +5,10 @@ plugins {
 group = project.findProperty('project.group') ?: project.group ?: rootProject.findProperty('project.group') ?: rootProject.group
 version = project.findProperty('project.version') ?: project.version ?: rootProject.findProperty('project.version') ?: rootProject.version
 
+def gitSourceUrl = project.findProperty('git.source.repo.url') ?: "${project.findProperty('git.source.url')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"
 gradlePlugin {
-    website.set(project.findProperty('plugin.website.url') ?: project.findProperty('plugin.url') ?: project.findProperty('git.repo.url'))
-    vcsUrl.set(project.findProperty('plugin.vcs.url') ?: project.findProperty('plugin.url') ?: project.findProperty('git.repo.url'))
+    website.set(project.findProperty('plugin.website.url') ?: project.findProperty('plugin.url') ?: project.findProperty('project.url') ?: gitSourceUrl)
+    vcsUrl.set(project.findProperty('plugin.vcs.url') ?: project.findProperty('plugin.url') ?: gitSourceUrl)
     plugins.configureEach {
         if(project.findProperty('plugin.id') == null
                 || project.findProperty('plugin.id') == ''
