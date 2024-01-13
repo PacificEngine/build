@@ -71,7 +71,7 @@ tasks.register('gitHubPublishTag') {
         def error = err.toString();
         assert error.isAllWhitespace() : " Failed to create tag '${gitTagId}'. Exception: ${error}"
 
-        def gitTagRepos = project.findProperty('git.tag.repo').split(';').toList() ?: List.of('origin')
+        def gitTagRepos = project.findProperty('git.tag.repo')?.split(';')?.toList() ?: List.of('origin')
         gitTagRepos.forEach(repo -> {
             exec {
                 commandLine gitExecutable, 'push', repo, gitTagId
