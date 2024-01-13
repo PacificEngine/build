@@ -44,30 +44,12 @@ Requires `GIT_USERNAME` and `GIT_TOKEN` environment variables to be set with a t
 
 __Mac/Linux__
 ```bash
-version="$(PRINT_VERSION=true ./gradlew --quiet :printVersion)"
-git tag "${version}" -m "v${version}"
-git push origin "${version}"
-url="https://api.github.com/repos/PacificEngine/build/releases"
-body="{\"tag_name\":\"${version}\",\"name\":\"v${version}\",\"draft\":false,\"prerelease\":false,\"generate_release_notes\":true}"
-curl --request POST --location --fail --header 'Accept: application/vnd.github+json' --header "Authorization: Bearer ${GIT_TOKEN}" $url --data $body
 ./gradlew publish
 ./gradlew publishPlugins
 ```
 
 __Windows__
 ```PowerShell
-set PRINT_VERSION=true
-$version="$(./gradlew.bat --quiet :printVersion)"
-set PRINT_VERSION=
-git tag "${version}" -m "v${version}"
-git push origin "${version}"
-$url = "https://api.github.com/repos/PacificEngine/build/releases"
-$Headers = @{
-	'Accept' = 'application/vnd.github+json'
-	'Authorization' = "Bearer ${GIT_TOKEN}"
-}
-$Body = "{`"tag_name`":`"${version}`",`"name`":`"v${version}`",`"draft`":false,`"prerelease`":false,`"generate_release_notes`":true}"
-Invoke-WebRequest -Uri $url -Method POST -MaximumRedirection 5 -Headers $Headers -Body $Body
 ./gradlew.bat publish
 ./gradlew.bat publishPlugins
 ```
