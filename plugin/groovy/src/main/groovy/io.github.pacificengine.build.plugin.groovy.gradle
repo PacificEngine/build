@@ -18,7 +18,7 @@ gradlePlugin {
             implementationClass = project.findProperty('plugin.implementationClass')
             tags.set(project.findProperty('plugin.tags')?.split(';')?.toList() ?: List<String>.of())
         } else {
-            logger.log(LogLevel.ERROR, "Unexpected Plugin Identifier (Skipping): " + name)
+            logger.log(LogLevel.ERROR, "Unexpected Plugin Identifier (Skipping): ${name}")
             // Doesn't actually skip, it just errors because of lack of displayName
         }
     }

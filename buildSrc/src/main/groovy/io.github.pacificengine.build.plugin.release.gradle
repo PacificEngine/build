@@ -6,8 +6,13 @@ plugins {
     id 'signing'
 }
 
+def releasePluginProjectName = project.findProperty('project.name') ?: project.name
+def releasePluginRootProjectName = project.findProperty('rootProject.name') ?: rootProject.name ?: releasePluginProjectName
 ext {
-    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith('SNAPSHOT')
+    isReleaseVersion = (!project.property('project.version') ?: project.version).endsWith("SNAPSHOT")
+    pluginArtifactGroup = project.findProperty('plugin.artifact.group') ?: project.findProperty('project.archive.group') ?: project.findProperty('project.group') ?: project.group
+    pluginArtifactId = project.findProperty('plugin.artifact.id') ?: project.findProperty('project.archive.name') ?: ((releasePluginRootProjectName == releasePluginProjectName) ? releasePluginProjectName : "${releasePluginRootProjectName}-${releasePluginProjectName}")
+    pluginArtifactVersion = releasePluginArtifactVersion = project.findProperty('project.archive.java.version') ?: project.findProperty('project.archive.version') ?: project.findProperty('project.version') ?: project.version
 }
 
 //https://docs.gradle.org/current/userguide/signing_plugin.html
