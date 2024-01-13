@@ -57,7 +57,7 @@ tasks.register('gitHubPublishTag') {
         isReleaseVersion
     }
     doFirst {
-        def gitExecutable = project.hasProperty('git.executable.path') ?: System.getenv('GIT_EXECUTABLE') ?: 'git'
+        def gitExecutable = project.findProperty('git.executable.path') ?: System.getenv('GIT_EXECUTABLE') ?: 'git'
         def err = new ByteArrayOutputStream()
         exec {
             commandLine gitExecutable, 'tag', gitTagId, '-m', gitTagMessage
@@ -66,7 +66,7 @@ tasks.register('gitHubPublishTag') {
         def error = err.toString();
         assert error.isAllWhitespace() : " Failed to create tag '${gitTagId}'. Exception: ${error}"
 
-        def gitTagRepos = project.hasProperty('git.tag.repo').split(';').toList() ?: List.of('origin')
+        def gitTagRepos = project.findProperty('git.tag.repo').split(';').toList() ?: List.of('origin')
         gitTagRepos.forEach(repo -> {
             exec {
                 commandLine gitExecutable, 'push', repo, gitTagId
