@@ -2,7 +2,6 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/PacificEngine/gradle-plugins?label=last%20release&style=flat-square)
 
 # How To Utilize Plugins
-
 ## Purpose
 The Purpose of this plugin is to make it easier to release to complicated repositories such as GCP and GitHub.
 
@@ -10,8 +9,7 @@ This plugin intentionally excludes the default assigned plugin artifact, so you 
 
 If you'd like to include the default assigned plugin artifact, use [io.github.pacificengine.build.release](../../release/README.md) instead.
 
-## Examples
-
+## Example Projects
 * [io.github.pacificengine.build.docker](https://github.com/PacificEngine/build/tree/main/docker)
 * [io.github.pacificengine.build.java](https://github.com/PacificEngine/build/tree/main/java)
 * [io.github.pacificengine.build.plugin.groovy](https://github.com/PacificEngine/build/tree/main/plugin/groovy)
@@ -21,7 +19,6 @@ If you'd like to include the default assigned plugin artifact, use [io.github.pa
 * [io.github.pacificengine.build.zip](https://github.com/PacificEngine/build/tree/main/zip)
 
 ## Usage
-
 Just include the plugin into any build you'd like to use it in and assign the appropriate properties.
 
 __Gradle File__

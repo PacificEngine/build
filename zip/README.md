@@ -2,7 +2,6 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/PacificEngine/gradle-plugins?label=last%20release&style=flat-square)
 
 # How To Utilize Plugins
-
 ## Purpose
 The Purpose of this plugin is to bundle all requirements for a java library into a zip file.
 
@@ -10,8 +9,10 @@ This plugin will also copy anything from the `src/zip` folder into the zip archi
 
 The zip file will be built to `build/artifact/${rootProject.name}-${project.name}-${project.property('project.version')}.zip`
 
-## Usage
+## Example Projects
+* [Docker Deployment Spring Template](https://github.com/PacificEngine/DockerDeployment/blob/main/zip/build.gradle)
 
+## Usage
 Using the `toCopy` in your dependencies will automatically copy the dependencies to a zip archive
 
 __Gradle File__

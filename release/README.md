@@ -2,12 +2,13 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/PacificEngine/gradle-plugins?label=last%20release&style=flat-square)
 
 # How To Utilize Plugins
-
 ## Purpose
 The Purpose of this plugin is to make it easier to release to complicated repositories such as GCP and GitHub.
 
-## Usage
+## Example Projects
+* [Docker Deployment Spring Template](https://github.com/PacificEngine/DockerDeployment/blob/main/api/build.gradle)
 
+## Usage
 Just include the plugin into any build you'd like to use it in and assign the appropriate properties.
 
 This plug-in should automatically pick up artifacts marked for publishing. 

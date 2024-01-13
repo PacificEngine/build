@@ -2,12 +2,10 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/PacificEngine/gradle-plugins?label=last%20release&style=flat-square)
 
 # How To Utilize Plugins
-
 ## Purpose
 The Purpose of this plugin is to make it easier to create groovy plugins with custom names.
 
-## Examples
-
+## Example Projects
 * [io.github.pacificengine.build.docker](https://github.com/PacificEngine/build/tree/main/docker)
 * [io.github.pacificengine.build.java](https://github.com/PacificEngine/build/tree/main/java)
 * [io.github.pacificengine.build.plugin.groovy](https://github.com/PacificEngine/build/tree/main/plugin/groovy)
@@ -17,7 +15,6 @@ The Purpose of this plugin is to make it easier to create groovy plugins with cu
 * [io.github.pacificengine.build.zip](https://github.com/PacificEngine/build/tree/main/zip)
 
 ## Usage
-
 Just include the plugin into any build you'd like to use it in and assign the appropriate properties.
 
 __Gradle File__

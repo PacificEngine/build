@@ -2,14 +2,15 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/PacificEngine/gradle-plugins?label=last%20release&style=flat-square)
 
 # How To Utilize Plugins
-
 ## Purpose
 The Purpose of this plugin is to significantly clean up standard java builds so that the build file is just a list of dependencies.
 
 The plugin will handle creating artifacts in a standard way for most java builds.
 
-## Usage
+## Example Projects
+* [Docker Deployment Spring Template](https://github.com/PacificEngine/DockerDeployment/blob/main/instance/build.gradle)
 
+## Usage
 Just include the plugin into any build you'd like to use it in and assign the appropriate properties.
 
 __Gradle File__

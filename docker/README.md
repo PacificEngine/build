@@ -2,15 +2,17 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/PacificEngine/gradle-plugins?label=last%20release&style=flat-square)
 
 # How To Utilize Plugins
-
+## Purpose
 The Purpose of this plugin is to more easily bundle docker required packages into a docker image
 
 This plugin will also copy anything from the `src/docker` folder into location
 
 The docker dependencies will be built to `build/docker`
 
-## Usage
+## Example Projects
+* [Docker Deployment Spring Template](https://github.com/PacificEngine/DockerDeployment/blob/main/deployment/build.gradle)
 
+## Usage
 Using the `toCopy` in your dependencies will automatically copy the dependencies to the docker java library location
 
 __Gradle File__

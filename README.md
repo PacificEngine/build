@@ -3,6 +3,7 @@
 
 # How To Utilize Plugins
 
+## Plugin List
 For usage go to the bundle specific readme file.
 * [io.github.pacificengine.build.docker](docker/README.md)
 * [io.github.pacificengine.build.java](java/README.md)
@@ -12,11 +13,10 @@ For usage go to the bundle specific readme file.
 * [io.github.pacificengine.build.repository](repository/README.md)
 * [io.github.pacificengine.build.zip](zip/README.md)
 
-Example Projects
+## Example Projects
 * [Docker Deployment Spring Template](https://github.com/PacificEngine/DockerDeployment)
 
 # How To Modify And Deploy
-
 * [Source link](https://github.com/PacificEngine/build)
 
 ## Compile
