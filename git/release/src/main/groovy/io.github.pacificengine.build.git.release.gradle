@@ -7,7 +7,7 @@ plugins {
 
 def gitTagId = "${project.findProperty('git.tag.id') ?: '<%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
 def gitTagMessage = "${project.findProperty('git.tag.message') ?: 'Release <%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
-tasks.register('gitHubPublishTag') {
+tasks.register('gitPublishTag') {
     onlyIf {
         isReleaseVersion
     }
@@ -71,10 +71,10 @@ tasks.register('gitHubPublishRelease') {
 }
 
 if (project.findProperty('git.tag.auto') == 'true' && project.findProperty('git.release.auto') == 'true') {
-    gitHubPublishRelease.dependsOn gitHubPublishTag
+    gitHubPublishRelease.dependsOn gitPublishTag
     publish.dependsOn gitHubPublishRelease
 } else if (project.findProperty('git.tag.auto') == 'true') {
-    publish.dependsOn gitHubPublishTag
+    publish.dependsOn gitPublishTag
 } else if (project.findProperty('git.release.auto') == 'true') {
     publish.dependsOn gitHubPublishRelease
 }
