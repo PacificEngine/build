@@ -65,7 +65,7 @@ tasks.register('gitHubPublishTag') {
         def gitExecutable = project.findProperty('git.executable.path') ?: System.getenv('GIT_EXECUTABLE') ?: 'git'
         def err = new ByteArrayOutputStream()
         exec {
-            commandLine gitExecutable, 'tag', gitTagId, '-m', gitTagMessage
+            commandLine gitExecutable, 'tag', '--quiet', gitTagId, '-m', gitTagMessage
             errorOutput = err
         }.assertNormalExitValue()
         def error = err.toString();
@@ -74,7 +74,7 @@ tasks.register('gitHubPublishTag') {
         def gitTagRepos = project.findProperty('git.tag.repo')?.split(';')?.toList() ?: List.of('origin')
         gitTagRepos.forEach(repo -> {
             exec {
-                commandLine gitExecutable, 'push', repo, gitTagId
+                commandLine gitExecutable, 'push', '--quiet', repo, gitTagId
                 errorOutput = err
             }.assertNormalExitValue()
             error = err.toString();
