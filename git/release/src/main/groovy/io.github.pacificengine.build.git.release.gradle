@@ -1,0 +1,74 @@
+import javax.net.ssl.HttpsURLConnection
+import groovy.json.JsonOutput
+
+def gitTagId = "${project.findProperty('git.tag.id') ?: '<%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
+def gitTagMessage = "${project.findProperty('git.tag.message') ?: 'Release <%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
+tasks.register('gitHubPublishTag') {
+    onlyIf {
+        isReleaseVersion
+    }
+    doFirst {
+        def gitExecutable = project.findProperty('git.executable.path') ?: System.getenv('GIT_EXECUTABLE') ?: 'git'
+        def err = new ByteArrayOutputStream()
+        exec {
+            commandLine gitExecutable, 'tag', gitTagId, '-m', gitTagMessage
+            errorOutput = err
+        }.assertNormalExitValue()
+        def error = err.toString();
+        assert error.isAllWhitespace() : " Failed to create tag '${gitTagId}'. Exception: ${error}"
+
+        def gitTagRepos = project.findProperty('git.tag.repo')?.split(';')?.toList() ?: List.of('origin')
+        gitTagRepos.forEach(repo -> {
+            exec {
+                commandLine gitExecutable, 'push', '--quiet', repo, gitTagId
+                errorOutput = err
+            }.assertNormalExitValue()
+            error = err.toString();
+            assert error.isAllWhitespace() : " Failed to push to '${repo}'. Exception: ${error}"
+        })
+    }
+}
+
+def gitReleaseName = "${project.findProperty('git.release.name') ?: 'Release <%VERSION%>'}".replace('<%VERSION%>', "${project.property('project.version')}")
+tasks.register('gitHubPublishRelease') {
+    onlyIf {
+        isReleaseVersion &&
+                project.findProperty('git.api.repo.url') != null
+                || ((project.findProperty('git.api.url') != null || System.getenv('GIT_API_URL') != null)
+                && (project.findProperty('git.project.name') != null || project.findProperty('project.name.short') != null))
+    }
+    doFirst {
+        def url = "${project.findProperty('git.api.repo.url') != null ?: "${project.findProperty('git.api.url') ?: System.getenv('GIT_API_URL')}/${project.findProperty('git.project.name') ?: project.findProperty('project.name.short')}"}/releases"
+        def req = (HttpsURLConnection) new URI(url).toURL().openConnection()
+        req.setRequestMethod('POST')
+        req.setRequestProperty('Accept', 'application/vnd.github+json')
+        req.setRequestProperty('Authorization', "Bearer ${project.findProperty('git.api.repo.key') ?: project.findProperty('git.repo.key') ?: System.getenv('GIT_TOKEN')}")
+        req.setRequestProperty('Content-Type', 'application/json; charset=UTF-8')
+        req.setDoOutput(true)
+        def body = [
+                tag_name                 : gitTagId,
+                name                     : gitReleaseName,
+                draft                    : project.findProperty('git.release.draft') == 'true',
+                prerelease               : project.findProperty('git.release.prerelease') == 'true',
+                generate_release_notes   : project.findProperty('git.release.notes') != 'false'
+        ]
+        if (project.hasProperty('git.release.body')) {
+            body.put('body', "${project.property('git.release.body')}".replace('<%VERSION%>', "${project.property('project.version')}"))
+        }
+        if (project.hasProperty('git.release.category')) {
+            body.put('discussion_category_name', project.property('git.release.category').toString())
+        }
+        if (project.hasProperty('git.release.latest')) {
+            body.put('make_latest', project.property('git.release.latest').toString())
+        }
+        req.getOutputStream().write(JsonOutput.toJson(body).getBytes('UTF-8'))
+        logger.info "Status '${req.getResponseMessage()}' Response: ${req.getInputStream().getText()}"
+    }
+}
+
+if (project.findProperty('git.tag.auto') == 'true') {
+    gitHubPublishRelease.dependsOn gitHubPublishTag
+}
+if (project.findProperty('git.release.auto') == 'true') {
+    publish.dependsOn gitHubPublishRelease
+}

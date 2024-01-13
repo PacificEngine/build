@@ -2,6 +2,7 @@ rootProject.name = 'build'
 
 if (!System.getenv('PRINT_VERSION')) {
     include 'docker'
+    include 'git:release'
     include 'java'
     include 'plugin:groovy'
     include 'plugin:release'
